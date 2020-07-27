@@ -1,9 +1,19 @@
+# coding=utf-8
 import requests
+
+token = '1072488292:AAHCA2i4oh46j_rDbxTPyQSnUpdfWchd65w'
+messeges_dict = {
+     '1': 'РќСѓ С‡С‚Рѕ С‚Р°Рј СЃ РґРµРЅСЊРіР°РјРё?',
+     '2': 'РљР°Рє СЃ РґРµРЅСЊРіР°РјРё-С‚Рѕ С‚Р°Рј?',
+     '3': 'Р§С‘ СЃ РґРµРЅСЊРіР°РјРё?',
+    }
+default_message = 'РўС‹ РєСѓРґР° Р·РІРѕРЅРёС€СЊ?! РџРѕ РєР°РєРѕРјСѓ РЅРѕРјРµСЂСѓ Р·РІРѕРЅРёС€СЊ?'
+
 
 class BotHandler:
     def __init__(self, token):
         self.token = token
-        self.api_url = f'https://api.telegram.org/bot{TOKEN}/'
+        self.api_url = f'https://api.telegram.org/bot{token}/'
 
     def get_updates(self, offset=None, timeout=30):
         method = 'getUpdates'
@@ -24,39 +34,35 @@ class BotHandler:
         if len(get_result) > 0:
             last_update = get_result[-1]
         else:
-            last_update = get_result[len(get_result)]
+            last_update = None
         return last_update
 
-token = '1072488292:AAHCA2i4oh46j_rDbxTPyQSnUpdfWchd65w'
-messeges_list = ['1', '2', '3']
-bot = BotHandler(token)
 
 def main():
     new_offset = None
+
+    bot = BotHandler(token)
 
     while True:
         bot.get_updates(new_offset)
 
         last_update = bot.get_last_update()
 
+        if last_update is None:
+            continue
+
         last_update_id = last_update['update_id']
         last_chat_text = last_update['message']['text']
         last_chat_id = last_update['message']['chat']['id']
-        last_chat_name = last_update['message']['chat']['first_name']
 
-        if last_chat_text in messeges_list:
-            if (last_chat_text == '1'):
-                bot.send_message(last_chat_id, 'Ну что там с деньгами?')
-            if (last_chat_text == '2'):
-                bot.send_message(last_chat_id, 'Как с деньгами-то там?')
-            if (last_chat_text == '3'):
-                bot.send_message(last_chat_id, 'Чё с деньгами?')
+        if last_chat_text in messeges_dict.keys():
+            bot.send_message(last_chat_id, messeges_dict[last_chat_text])
         else:
-            bot.send_message(last_chat_id, 'Ты куда звонишь?! По какому номеру звонишь?')
-
+            bot.send_message(last_chat_id, default_message)
         new_offset = last_update_id + 1
 
-if __name__ == '__main__':  
+
+if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
