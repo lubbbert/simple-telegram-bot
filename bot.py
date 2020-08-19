@@ -2,7 +2,7 @@
 import requests
 
 token = '1072488292:AAHCA2i4oh46j_rDbxTPyQSnUpdfWchd65w'
-messeges_dict = {
+messages_dict = {
      '1': 'Ну что там с деньгами?',
      '2': 'Как с деньгами-то там?',
      '3': 'Чё с деньгами?',
@@ -55,8 +55,8 @@ def main():
         last_chat_text = last_update['message']['text']
         last_chat_id = last_update['message']['chat']['id']
 
-        if last_chat_text in messeges_dict.keys():
-            bot.send_message(last_chat_id, messeges_dict[last_chat_text])
+        if last_chat_text in messages_dict.keys():
+            bot.send_message(last_chat_id, messages_dict[last_chat_text])
         else:
             bot.send_message(last_chat_id, default_message)
         new_offset = last_update_id + 1
